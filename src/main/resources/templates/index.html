@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myapp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Parking Heatmap</title>
+    <link href="css/parking.css" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="js/angular-bootstrap.js"></script>
+    <script src="js/ng-map.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.3.0/nouislider.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.3.0/nouislider.min.js"></script>
+    <script src="js/wNumb.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css' type='text/css' media='all' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js"></script>
+    <script>
+        var app = angular.module('myapp', ['ngMap', 'ngResource', 'angular-loading-bar', 'ngAnimate']);
+        var citationData = [];
+
+    </script>
+</head>
+
+<body>
+<style>
+
+</style>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Baltimore Parking Citations</a>
+        </div>
+    </div>
+</nav>
+
+<div ng-controller="LayerHeatmapCtrl as vm">
+    <div class="jumbotron">
+        <div class="container">
+            <ng-map zoom="12" center="39.290385, -76.612189">
+                <heatmap-layer id="heatmap" data="citationData"></heatmap>
+            </ng-map>
+        </div>
+        <div id="slider-date"></div>
+        <p><span id="event-time"></span></p>
+        <button type="button" ng-click="loadAllPoints()" class="btn btn-default">Load All Data</button>
+    </div>
+
+    <div class="container" ng-controller="FilterCtrl">
+        <button type="button" ng-click="clear()" class="btn btn-default">Clear Filters</button>
+        <div class="row">
+            <div class="col-md-4">
+                <h2>By Brand</h2>
+               <span ng-repeat="car in cars">
+                    <p>
+                        <label class="checkbox" for="{{car.id}}">
+                            <input type="checkbox" ng-model="selection.cars[car.id]"
+                                   name="carsInput" id="{{car.id}}" ng-click="updateSelection()"/>
+                            {{car.name}}
+                        </label>
+                    </p>
+                </span>
+            </div>
+            <div class="col-md-4">
+                <h2>By Ticket Type</h2>
+               <span ng-repeat="violation in violations">
+                   <p>
+                       <label class="checkbox" for="{{violation.id}}">
+                           <input type="checkbox" ng-model="selection.violations[violation.id]" name="violationsInput"
+                                  id="{{violation.id}}" ng-click="updateSelection()"/>
+                           {{violation.name}}
+                       </label>
+                   </p>
+                </span>
+            </div>
+            <div class="col-md-4" ng-controller="StatsCtrl">
+                <h2>Citation Stats</h2>
+                <h5>Violations by Make</h5>
+                <ul>
+                    <li ng-repeat="x in cars">
+                        {{ x }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr>
+
+        <footer>
+            <p>&copy; Corgi Corp</p>
+        </footer>
+    </div>
+</div>
+
+<script src="js/heat-map-controller.js"></script>
+<script src="js/stats-controller.js"></script>
+<script src="js/filter-controller.js"></script>
+</body>
+</html>
